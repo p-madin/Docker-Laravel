@@ -49,20 +49,29 @@ RUN { \
 
 #RUN sed -i '/\[www\]/a pm.status_path = /status' /usr/local/etc/php-fpm.d/zz-docker.conf
 
-WORKDIR /var/www
-
-COPY . ./
-
 WORKDIR /var/www_tmp
 
+# 1. Download the Laravel base boilerplate. 
+# Placed before COPY so that local codebase changes don't invalidate this slow cache step.
 RUN git clone https://github.com/laravel/laravel.git . \
     && rm -rf .git \
     && cp .env.example .env
 
+# 2. Install dependencies for the base boilerplate
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer 
 RUN composer install --optimize-autoloader --no-interaction --no-progress --prefer-dist
 
+# 2.5 Install Breeze into the boilerplate BEFORE copying custom files
+# This ensures Breeze generates its controllers and routes in the temporary staging area.
+# Because it's isolated here, it cannot accidentally overwrite your custom ./routes/web.php 
+# during container startup.
+RUN composer require laravel/breeze --dev \
+    && php artisan breeze:install blade --dark --pest --no-interaction \
+    && npm install && npm run build
+
+# 3. Copy our custom application overlay files (the specialized code)
 WORKDIR /var/www
+COPY . ./
 
 RUN chown -R www-data:www-data /var/www /var/www_tmp
 

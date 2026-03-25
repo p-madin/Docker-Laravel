@@ -1,0 +1,6 @@
+* text=auto
+
+# Enforce LF for bash scripts so they execute correctly inside Linux Docker containers
+# (If a bash script is cloned with CRLF and copied into a Linux container, the container
+# will fail to start with a '\r: command not found' or 'bad interpreter' error)
+*.sh text eol=lf

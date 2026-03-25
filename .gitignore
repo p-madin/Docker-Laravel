@@ -1,6 +1,7 @@
 # 1. Ignore EVERYTHING in this repository by default
 /*
 # 2. BUT allow (whitelist) our actual custom Docker architecture files
+!/.gitattributes
 !/.gitignore
 !/PHPDockerfile
 !/NginxDockerfile

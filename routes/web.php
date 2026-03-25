@@ -17,4 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+// Conditionally load auth routes to prevent crashes during the initial 
+// Docker startup before `breeze:install` has generated the controllers.
+if (file_exists(__DIR__.'/auth.php') && file_exists(app_path('Http/Controllers/Auth/AuthenticatedSessionController.php'))) {
+    require __DIR__.'/auth.php';
+}
