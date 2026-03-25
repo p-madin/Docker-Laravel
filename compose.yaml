@@ -3,8 +3,11 @@ services:
     build:
       context: .
       dockerfile: PHPDockerfile
+    ports:
+      - "9000:9000"
     volumes:
       - ./routes:/var/www/routes
+      - assets_data:/var/www/public/build
     environment:
       - APP_ENV=local
       - DB_CONNECTION=mysql
@@ -14,8 +17,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - .:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - assets_data:/var/www/public/build
     depends_on:
       - app
   mysql:
@@ -27,3 +30,4 @@ services:
       - dbdata:/var/lib/mysql
 volumes:
   dbdata:
+  assets_data:

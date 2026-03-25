@@ -1,0 +1,13 @@
+# 1. Ignore EVERYTHING in this repository by default
+/*
+# 2. BUT allow (whitelist) our actual custom Docker architecture files
+!/.gitignore
+!/PHPDockerfile
+!/NginxDockerfile
+!/compose.yaml
+!/composer.json
+!/docker/
+!/routes/
+# (Add anything else you explicitly create like !/app/Http/Controllers/HelloController.php)
+# 3. Explicitly ignore the local-only override so it never hits production
+/compose.override.yaml
